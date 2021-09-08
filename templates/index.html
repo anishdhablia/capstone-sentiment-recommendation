@@ -1,0 +1,118 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Anishkumar Dhablia</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<style>
+body {
+  background-color: black;
+  color: white;
+}
+</style>
+
+<body>
+  <div class="container-fluid" style="padding: 30px 0px 30px 30px;box-shadow: rgb(255 255 255 / 38%) 0px 50px 100px -20px, rgb(255 255 255 / 30%) 0px 30px 60px -30px;background-color: #485461;background-image: linear-gradient(315deg, #485461 0%, #28313b 74%);">
+    <h2>Sentiment Based Recommendation System</h2> 
+    <h5>Anishkumar Dhablia</h5>
+  </div>
+
+  <div class="container">
+    <div class="row message-row d-none" style="margin-top: 2em;">
+      <div class="alert alert-warning alert-message" role="alert"></div>
+    </div>
+    <div class="row" style="margin-top: 2em;">
+      <div class="col-md-4">
+        <input type="text" class="form-control" placeholder="Username" required id="username" /> </div>
+      <div class="col-md-6 left">
+        <button type="button" class="btn btn-success search">Get Recommendations</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+      <hr/>
+    </div>
+    </div>
+    <div class="row" style="margin-top: 2em;">
+      <div class="col-md-12 user-data">                 
+      </div>
+    </div>
+    <!-- Container End -->
+  </div>
+
+  <div class='card-template d-none'>
+    <div class="card text-white bg-dark mb-3" style="background-color #000000; background-image linear-gradient(315deg, #000000 0%, #7f8c8d 74%);">
+          <div class="card-header pr-name" style="border-bottom: 1px solid rgb(255 255 255 / 13%);"><h5 class="text-here"></h5></div>
+          <div class="card-body"> 
+            <small class="text-muted">Brand</small>
+            <h6 class="card-title pr-brand">Brand</h6>
+            <small class="text-muted">Manufacturer</small>
+            <p class="card-text pr-manufacturer">Manufacturer</p>
+            <small class="text-muted">Categories</small>
+            <p class="card-text pr-categories"><small class="text-here">Categories</small></p>
+          </div>
+        </div>
+  </div>
+
+</body>
+
+
+<script type="text/javascript">
+
+$('.search').click(function(e) {
+  
+  $('.message-row').addClass('d-none');
+  
+  debugger
+  
+  if($('#username').val().length == 0) {
+    alert('Username is required.');
+    return;
+  }
+
+  var username = $('#username').val();
+  
+  $.ajax('/' + username, {
+    dataType: 'json', // type of response data
+    timeout: 1000, // timeout milliseconds
+    success: function(data, status, xhr) { // success callback function
+      
+      $('.user-data').empty()
+      
+      if(data['error_message']){
+        $('.message-row').find('.alert-message').html(data['error_message']);
+        $('.message-row').removeClass('d-none');                
+        return;
+      }
+      
+
+      Object.entries(data).forEach((entry) => {
+        const [key, value] = entry;
+
+        user_entry = $('.card-template').find('.card').clone()
+
+        $(user_entry).find('.pr-name').find('.text-here').html(value['name'])
+        $(user_entry).find('.pr-brand').html(value['brand'])
+        $(user_entry).find('.pr-categories').find('.text-here').html(value['categories'])
+        $(user_entry).find('.pr-manufacturer').html(value['manufacturer'])
+
+        $(user_entry).appendTo('.user-data')
+        //$(user_entry).remove()
+
+      });
+
+      $('.message-row').addClass('d-none');
+    },
+    error: function(jqXhr, textStatus, errorMessage) { // er$('.message-row').removeClass('d-none')
+      $('.message-row').removeClass('d-none');
+      $('.message-row').find('.alert-message').html(errorMessage);
+    }
+  });
+})
+</script>
+
+</html>
