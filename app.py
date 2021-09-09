@@ -24,7 +24,7 @@ def get_recommendations(username):
 	# Get recommendations
 	# Send JSON Object
 
-	return get_recommendations_filtered(username)
+	return get_recommendations_filtered(username.lower())
 
 
 #----------------------------------------------------------------------------#
